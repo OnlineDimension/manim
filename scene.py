@@ -1,17 +1,18 @@
 from manim import *
 import numpy as np
 
-class scrap(Scene):
-	def construct(self):
+
 		
-		a = MathTable([[0,1],[2,3]])
-		
-		self.add(a[0][2])
-		
-def seg(a,b,color=WHITE,thicc=4):
+def seg(a,b,color=WHITE,thicc=1):
 	x = Line(start=np.array([a[0],a[1],0]), end=np.array([b[0],b[1],0]),stroke_width=thicc)
 	x.set_color(color)
 	return x
+	
+def rseg(x,y,length=3.25):
+	a = Line(start=np.array([x-length,y-3,1]), 
+			end=np.array([x,y-3,1]),
+			stroke_width = 4)
+	return a	
 		
 def quad(x1,y1,x2,y2,x3,y3,x4,y4,c):
 	a1 = np.array([x1,y1,0])
@@ -20,6 +21,12 @@ def quad(x1,y1,x2,y2,x3,y3,x4,y4,c):
 	a4 = np.array([x4,y4,0])
 	a  = Polygon(a1,a2,a3,a4,color=c)
 	return a
+	
+class scrap(Scene):
+	def construct(self):
+		a = seg([-7,0],[7,0])
+		b = seg([0,-3.75],[0,3.75])
+		self.add(a,b)
 	
 class chain:
 	def __init__(self, color):
@@ -1309,6 +1316,438 @@ class semi_problem(Scene):
 		
 		self.wait(3)
 		
-class 
+class titlepage(Scene):
+	def construct(self):
+		
+		 #olw = Tex('w','\\leq OLW(w)\leq')#, '\\infty')
+		 #olw.set_color_by_tex('nft',RED)
+		 #self.add(tex)
+		title = Tex(r'Dissertation Defense').to_edge(UP)
+		
+		title2 = Tex(r'Improved bounds on the on-line width of various classes of posets').scale(0.9).next_to(title,DOWN*3)
+		
+		name = Tex(r'Israel R. Curbelo').scale(0.8).next_to(title2,DOWN*3)
+		advisor = Tex(r'Advisor: Csaba Bir\'o').scale(0.8).next_to(name,DOWN)
+		
+		date = Tex(r'April 19, 2022').scale(0.7).to_edge(DOWN)
+		college = Tex(r'University of Louisville').scale(0.7).next_to(date,UP*2)
+		department = Tex(r'Department of Mathematics').scale(0.7).next_to(college,UP)
 
-#test comment 2
+		self.add(title,title2,name,advisor,department,college,date)
+		
+class mysemi3(Scene):
+	def construct(self):
+		
+		name = Tex(r'Israel R. Curbelo').scale(0.5)
+		#name.set_opacity(0.75)
+		name.to_corner(DR,buff=0.05)
+		name.set_color(YELLOW)
+		self.play(Write(name))
+		self.wait()
+		w = Tex(r'$OLW_s^R(3)=5$').to_corner(UL,buff=0.1)
+		self.play(Write(w))
+		self.wait()
+		
+		def spc(x):
+			self.play(Create(x))
+		def sprt(x,y):
+			self.play(ReplacementTransform(x,y))
+		def sprt3(a,b,c,x,y,z):
+			self.play(ReplacementTransform(a,x),ReplacementTransform(b,y),ReplacementTransform(c,z))
+		def sptfc(x,y):
+			self.play(TransformFromCopy(x,y))
+		def mid(a,b):
+			return (a+b)/2
+		def dseg(a,b):
+			return DashedVMobject(seg(a,b,BLUE)).shift((0,0,1))
+		
+		length = 3.25
+		bot = -3.75
+		top = 3.75
+		
+		x1 = rseg(length/2,0)
+		t1 = Tex(r'\tiny $1$').next_to(x1,LEFT)
+		spc(x1)
+		spc(t1)
+		self.wait(2)
+		
+		l = length/2 + length
+		h = length/2 + 2*length 
+		
+		l1 = dseg([l-length,bot],[l-length,top])
+		h1 = dseg([h-length,bot],[h-length,top])
+		spc(l1)
+		spc(h1)
+		self.wait(2)
+		
+		m = mid(l,h)
+		x2 = rseg(m,2)
+		t2 = Tex(r'\tiny 1').next_to(x2,LEFT)
+		h = m
+		h2 = dseg([h-length,bot],[h-length,top])
+		m = mid(l,h)
+		x3 = rseg(m,0)
+		t3 = Tex(r'\tiny 2').next_to(x3,LEFT)
+		l = m
+		l2 = dseg([l-length,bot],[l-length,top])
+		m = mid(l,h)
+		x4 = rseg(m,1)
+		t4 = Tex(r'\tiny 3').next_to(x4,LEFT)
+		l = m
+		l3 = dseg([l-length,bot],[l-length,top])
+		spc(x2)
+		spc(t2)
+		self.wait(2)
+		sprt(h1,h2)
+		self.wait(2)
+		spc(x3)
+		spc(t3)
+		self.wait(2)
+		sprt(l1,l2)
+		self.wait(2)
+		spc(x4)
+		spc(t4)
+		self.wait(2)
+		sprt(l2,l3)
+		self.wait(2)
+		
+		temp = rseg(mid(h,l)-length,3)
+		tempt = Tex(r'\tiny 4').next_to(temp,LEFT)
+		spc(temp)
+		spc(tempt)
+		self.wait(2)
+		self.play(FadeOut(temp),FadeOut(tempt))
+		self.wait()
+		
+		l4 = dseg([l-2*length,bot],[l-2*length,top])
+		h4 = dseg([h-2*length,bot],[h-2*length,top])
+		l5 = dseg([l-3*length,bot],[l-3*length,top])
+		h5 = dseg([h-3*length,bot],[h-3*length,top])
+		sptfc(l3,l4)
+		sptfc(l4,l5)
+		self.play(FadeIn(h4,h5))
+		self.wait(2)
+		
+		l = l-3*length
+		h = h-3*length
+		step = (h-l)/4
+		c1 = rseg(l+step,0)
+		tc1 = Tex(r'\tiny $1$').next_to(c1,RIGHT)
+		c2 = rseg(l+2*step,1)
+		tc2 = Tex(r'\tiny 4').next_to(c2,RIGHT)
+		c3 = rseg(l+3*step,2)
+		tc31 = Tex(r'\tiny 5').next_to(c3,RIGHT)
+		tc32 = Tex(r'\tiny 3').next_to(c3,RIGHT)
+		spc(c1)
+		spc(tc1)
+		self.wait(2)
+		spc(c2)
+		spc(tc2)
+		self.wait(2)
+		spc(c3)
+		spc(tc31)
+		self.wait(2)
+		sprt(tc31,tc32)
+		self.wait(2)
+		
+		v09 = dseg([l+2*step,bot],[l+2*step,top])
+		v10 = dseg([l+3*step,bot],[l+3*step,top])
+		spc(v09)
+		spc(v10)
+		self.wait(2)
+		
+		h = l+3*step+length
+		l = l+2*step+length
+		step = (h-l)/3
+		d1 = rseg(l+step,3)
+		td15 = Tex(r'\tiny 5').next_to(d1,RIGHT)
+		td12 = Tex(r'\tiny 2').next_to(d1,RIGHT)
+		d2 = rseg(l+2*step,4)
+		td2 = Tex(r'\tiny 4').next_to(d2,RIGHT)
+		spc(d1)
+		spc(td15)
+		self.wait(2)
+		sprt(td15,td12)
+		self.wait(2)
+		spc(d2)
+		spc(td2)
+		self.wait(2)
+		
+		v11 = dseg([l+2*step,bot],[l+2*step,top])
+		spc(v11)
+		self.wait(2)
+		
+		e = rseg(l+2*step+length,5)
+		te = Tex(r'\tiny 5').next_to(e,RIGHT)
+		spc(e)
+		spc(te)
+		self.wait(2)
+		
+class mysemiw(Scene):
+	def construct(self):
+		
+		name = Tex(r'Israel R. Curbelo').scale(0.5)
+		#name.set_opacity(0.75)
+		name.to_corner(DR,buff=0.05)
+		name.set_color(YELLOW)
+		self.play(Write(name))
+		#self.wait()
+		w = Tex(r'$OLW_s^R(11)\geq 17$').to_corner(UL,buff=0.1)
+		self.play(Write(w))
+		self.wait(2)
+		
+		def spc(x):
+			self.play(Create(x))
+		def sprt(x,y):
+			self.play(ReplacementTransform(x,y))
+		def sprt3(a,b,c,x,y,z):
+			self.play(ReplacementTransform(a,x),ReplacementTransform(b,y),ReplacementTransform(c,z))
+		def sptfc(x,y):
+			self.play(TransformFromCopy(x,y))
+		def mid(a,b):
+			return (a+b)/2
+		def dseg(x):
+			return DashedVMobject(seg([x,bot],[x,top])).shift((0,0,1))
+		
+		length = 3.25
+		bot = -3.75
+		top = 3.75
+		k = 5
+		Bcolors = [0,1,0,1,0,0,1,1,1,0,1]
+		
+		#A
+		for a in range(k): 
+			spc(rseg(length/2, a/k).set_color(BLUE))
+		Atext = Tex(r'\tiny $A$').shift(DOWN*3.25)
+		self.play(Write(Atext))
+		self.wait(2)
+		
+		l = length/2 + length
+		h = length/2 + 2*length 
+		
+		L = [dseg(l-length)]
+		H = [dseg(h-length)]
+		spc(L[0])
+		spc(H[0])
+		
+		A = []
+		acount = 0
+		bcount = 0
+		for b in Bcolors:
+			m = mid(l,h)
+			s = rseg(m,1)
+			if b:
+				s.generate_target()
+				s.target.set_color(YELLOW)
+				self.play(MoveToTarget(s))
+				s.target.shift(DOWN*(1-bcount/k))
+				self.play(MoveToTarget(s))
+				L.append(dseg(m-length))
+				sprt(L[-2],L[-1])
+				bcount +=1
+				l=m
+			else:
+				s.generate_target()
+				s.target.set_color(BLUE)
+				self.play(MoveToTarget(s))
+				s.target.shift(UP*(1-acount/k))
+				self.play(MoveToTarget(s))
+				H.append(dseg(m-length))
+				sprt(H[-2],H[-1])
+				acount +=1
+				h=m
+				A.append(s)
+		brightlocation=l
+		Btext = Tex(r'\tiny $B$').shift([length+length/4,-3.25,0])
+		self.play(Write(Btext))
+		self.wait(2)
+		
+		h = h+2
+		A2 = VGroup(H[-1],*A)
+		A2.generate_target()
+		A2.target.shift(RIGHT*2)
+		self.play(MoveToTarget(A2))
+		self.wait(2)
+		
+		L.append(dseg(l-2*length))
+		L.append(dseg(l-3*length))
+		H.append(dseg(h-2*length))
+		H.append(dseg(h-3*length))
+		sptfc(L[-3],L[-2])
+		sptfc(L[-2],L[-1])
+		self.play(FadeIn(H[-1],H[-2]))
+		self.wait(2)
+		
+		l = l - 3*length
+		h = h - 3*length
+		step = (h-l)/(2*k+2)
+		
+		for a in range(k):
+			spc(rseg(l+(a+1)*step,a/k).set_color(BLUE))
+			L[-1].generate_target()
+			L[-1].target.shift(RIGHT*step)
+			L[-2].generate_target()
+			L[-2].target.shift(RIGHT*step)
+			L[-3].generate_target()
+			L[-3].target.shift(RIGHT*step)
+			self.play(MoveToTarget(L[-1]),MoveToTarget(L[-2]),MoveToTarget(L[-3]))
+		for a in range(k):
+			spc(rseg(l+(a+1+k)*step,(a+k)/k))
+			L[-1].generate_target()
+			L[-1].target.shift(RIGHT*step)
+			L[-2].generate_target()
+			L[-2].target.shift(RIGHT*step)
+			L[-3].generate_target()
+			L[-3].target.shift(RIGHT*step)
+			self.play(MoveToTarget(L[-1]),MoveToTarget(L[-2]),MoveToTarget(L[-3]))
+		a = 2*k
+		b = rseg(l+(a+1)*step,a/k)
+		tb = Tex(r'\tiny $b\in B$').next_to(b,UP)
+		spc(b)
+		b.generate_target()
+		b.target.set_color(YELLOW)
+		self.play(MoveToTarget(b))
+		self.play(Write(tb))
+		H[-1].generate_target()
+		H[-1].target.shift(LEFT*step)
+		H[-2].generate_target()
+		H[-2].target.shift(LEFT*step)
+		H[-3].generate_target()
+		H[-3].target.shift(LEFT*step)
+		self.play(MoveToTarget(H[-1]),MoveToTarget(H[-2]),MoveToTarget(H[-3]))
+		self.wait(2)
+		
+		h = l+(2*k+1)*step + length
+		l = l+(2*k)*step + length
+		step = (h-l)/(2*k+2)
+		
+		for a in range(k):
+			spc(rseg(l+(a+1)*step,2 +(a+1)/k).set_color(YELLOW))
+			
+		a = k
+		c = rseg(l+(a+1)*step,2+(a+1)/k)
+		tc = Tex(r'\tiny $c\notin A\cup B$').next_to(c,UP)
+		spc(c)
+		self.play(Write(tc))
+		self.wait(2)
+		
+		spc(seg([l+(a+1)*step,bot],[l+(a+1)*step,top],PINK,0.5))
+		for d in range(k):
+			spc(rseg(l+(a+1)*step+length, 2+(a+1+d+1)/k).set_color(PINK))
+		Dtext = Tex(r'\tiny $D$').next_to(c,DOWN).shift([length,1/k,0])
+		self.play(Write(Dtext))
+		self.wait(2)
+		w2 = Tex(r'$OLW_s^R(2k+1)\geq 3k+2$').to_corner(UL,buff=0.1)
+		sprt(w,w2)
+		self.wait(2)
+		
+		lasta = seg([length/2,-3],[length/2,-2-1/k])
+		tla = Tex(r'\tiny $k$').next_to(lasta,RIGHT)
+		self.play(Create(lasta),Create(tla))
+		self.wait(2)
+		
+		lastb = seg([brightlocation,-3],[brightlocation,-2])
+		tlb = Tex(r'\tiny $k+1$').next_to(lastb,RIGHT)
+		self.play(Create(lastb),Create(tlb))
+		self.wait(2)
+		
+		tlc = Tex(r'\tiny $1$').next_to(c,RIGHT)
+		spc(tlc)
+		self.wait(2)
+		
+		lastd = seg([l+(a+1)*step+length,2+(a+1+1)/k-3],[l+(a+1)*step+length,2+(a+1+k-1+1)/k-3])
+		tld = Tex(r'\tiny $k$').next_to(lastd,RIGHT)
+		self.play(Create(lastd),Create(tld))
+		self.wait(2)
+
+class cas(Scene):
+	def construct(self):
+		
+		 #olw = Tex('w','\\leq OLW(w)\leq')#, '\\infty')
+		 #olw.set_color_by_tex('nft',RED)
+		 #self.add(tex)
+		tex = Tex(r'Summary of Results').set_color(BLUE)#, font_size=144)
+		tex.to_edge(UP)
+		
+		thm = Tex(r'\textbf{Theorem.} (Bir\'o and Curbelo) $OLW_2(w)\geq (2-o(1))\binom{w+1}{2}$.', tex_environment='flushleft').scale(0.7).to_edge(LEFT).shift(UP*2)
+			
+		thm2 = Tex(r'\textbf{Theorem.} (Bir\'o and Curbelo) $OLW_d^R(w)\geq (2-\frac{1}{d-1}-o(1))\binom{w+1}{2}$.', tex_environment='flushleft').scale(0.7).next_to(thm,DOWN).to_edge(LEFT)
+
+		thm3 = Tex(r'\textbf{Theorem.} (Bir\'o and Curbelo) $OLW_s^R(w)\geq \lceil \frac{3}{2}w \rceil$.', tex_environment='flushleft').scale(0.7).next_to(thm2,DOWN).to_edge(LEFT)
+		
+		thm4 = Tex(r'\textbf{Theorem.} (Bir\'o and Curbelo) $OLW_\epsilon^R(w)\geq \lfloor{\frac{5}{3}w\rfloor}$.', tex_environment='flushleft').scale(0.7).next_to(thm3,DOWN).to_edge(LEFT)
+		
+		thm5 = Tex(r'\textbf{Theorem.} (Bir\'o and Curbelo) $2w\leq GW_o^R(w)\leq 3w-f(w).$', tex_environment='flushleft').scale(0.7).next_to(thm4,DOWN).to_edge(LEFT)
+		
+		
+		self.play(Write(tex))
+		self.wait(2)
+		self.play(Write(thm))
+		self.wait(2)
+		self.play(Write(thm2))
+		self.wait(2)
+		self.play(Write(thm3))
+		self.wait(2)
+		self.play(Write(thm4))
+		self.wait(2)
+		self.play(Write(thm5))
+		self.wait(3)
+		
+class objectives(Scene):
+	def construct(self):
+		
+		 #olw = Tex('w','\\leq OLW(w)\leq')#, '\\infty')
+		 #olw.set_color_by_tex('nft',RED)
+		 #self.add(tex)
+		tex = Tex(r'Outline').set_color(BLUE)#, font_size=144)
+		tex.to_edge(UP)
+		
+		thm = Tex(r'1. Posets - basic concepts', tex_environment='flushleft').scale(0.7).to_edge(LEFT).shift(UP*2)
+			
+		thm2 = Tex(r'2. Chain Partitioning and Width - on-line vs off-line', tex_environment='flushleft').scale(0.7).next_to(thm,DOWN).to_edge(LEFT)
+
+		thm3 = Tex(r'3. Dimension - concepts and results', tex_environment='flushleft').scale(0.7).next_to(thm2,DOWN).to_edge(LEFT)
+		
+		thm4 = Tex(r'4. Interval Orders and Semi-Orders - concepts and results', tex_environment='flushleft').scale(0.7).next_to(thm3,DOWN).to_edge(LEFT)
+		
+		thm5 = Tex(r'5. Proof - $OLW_s^R(w)\geq \lceil \frac{3}{2}w \rceil$', tex_environment='flushleft').scale(0.7).next_to(thm4,DOWN).to_edge(LEFT)
+		
+		
+		self.play(Write(tex))
+		self.wait(2)
+		self.play(Write(thm))
+		self.wait(2)
+		self.play(Write(thm2))
+		self.wait(2)
+		self.play(Write(thm3))
+		self.wait(2)
+		self.play(Write(thm4))
+		self.wait(2)
+		self.play(Write(thm5))
+		self.wait(3)
+
+class chrslu(Scene):
+	def construct(self):
+		
+		self.wait()
+		
+
+
+		
+		
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
